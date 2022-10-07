@@ -17,14 +17,30 @@ const App = () => {
     console.log('LOGIN FAIL', error.message);
   };
 
+  const onLogout = (e) => {
+    e.preventDefault();
+    loginService.logout();
+    setUser(null);
+  };
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
+  }, []);
+
+  useEffect(() => {
+    setUser(loginService.getUser());
   }, []);
 
   if (user) {
     return (
       <>
         <h2>blogs</h2>
+        <div style={{ marginBottom: '2rem' }}>
+          Logged in as {user.name}.{' '}
+          <form onSubmit={onLogout} style={{ display: 'inline' }}>
+            <button type='submit'>Log out</button>
+          </form>
+        </div>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
