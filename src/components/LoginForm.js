@@ -14,13 +14,20 @@ const LoginForm = ({ onSuccess, onFail }) => {
       loginService.setUser(response);
       onSuccess();
     } catch (error) {
-      onFail(error);
+      onFail(error.response.data.error.message);
     }
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
+    <form
+      onSubmit={handleLogin}
+      style={{
+        display: 'inline-flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      }}
+    >
+      <label>
         username
         <input
           type='text'
@@ -28,8 +35,8 @@ const LoginForm = ({ onSuccess, onFail }) => {
           name='Username'
           onChange={({ target }) => setUsername(target.value)}
         />
-      </div>
-      <div>
+      </label>
+      <label>
         password
         <input
           type='password'
@@ -37,7 +44,7 @@ const LoginForm = ({ onSuccess, onFail }) => {
           name='Password'
           onChange={({ target }) => setPassword(target.value)}
         />
-      </div>
+      </label>
       <button type='submit'>login</button>
     </form>
   );

@@ -4,8 +4,8 @@ const baseUrl = '/api/login';
 const Key = 'blogsAppUser';
 
 const login = async (credentials) => {
-  const response = await axios.post(baseUrl, credentials);
-  return response.data;
+  const { data } = await axios.post(baseUrl, credentials);
+  return data;
 };
 
 const logout = () => {

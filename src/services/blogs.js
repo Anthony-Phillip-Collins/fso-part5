@@ -1,11 +1,22 @@
 import axios from 'axios';
+import loginService from './login';
 const baseUrl = '/api/blogs';
 
-const getAll = () => {
-  const request = axios.get(baseUrl);
-  return request.then((response) => response.data);
+const authConfig = () => ({
+  headers: {
+    Authorization: `Bearer ${loginService.getUser().token}`,
+  },
+});
+
+const getAll = async () => {
+  const { data } = await axios.get(baseUrl);
+  return data;
 };
 
-const blogService = { getAll };
+const create = async (newBlog) => {
+  const { data } = await axios.post(baseUrl, newBlog, authConfig());
+  return data;
+};
+const blogService = { getAll, create };
 
 export default blogService;
