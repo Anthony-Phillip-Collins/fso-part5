@@ -14,7 +14,7 @@ const LoginForm = ({ onSuccess, onFail }) => {
       loginService.setUser(response);
       onSuccess();
     } catch (error) {
-      onFail(error.response.data.error.message);
+      onFail(error);
     }
   };
 

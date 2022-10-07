@@ -9,10 +9,10 @@ const CreateForm = ({ onSuccess, onFail }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await blogService.create({ title, author, url });
-      console.log(response);
+      const data = await blogService.create({ title, author, url });
+      onSuccess(data);
     } catch (error) {
-      console.error(error.response.data.error.message);
+      onFail(error);
     }
   };
 

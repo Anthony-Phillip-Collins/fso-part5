@@ -2,20 +2,26 @@ import { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import CreateForm from './components/CreateForm';
 import LoginForm from './components/LoginForm';
+import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState();
+  const [message, setMessage] = useState('');
+  const [hasError, setHasError] = useState(false);
 
   const onLoginSuccess = () => {
     setUser(loginService.getUser());
-    console.log('LOGIN SUCCESS', loginService.getUser());
   };
 
   const onLoginFail = (error) => {
-    console.log('LOGIN FAIL', error.message);
+    showNotification({
+      message:
+        error.response.data.error.message || 'invalid username or password',
+      isError: true,
+    });
   };
 
   const onLogout = (e) => {
@@ -24,12 +30,29 @@ const App = () => {
     setUser(null);
   };
 
-  const onCreateSuccess = (e) => {
-    console.log(e);
+  const onCreateSuccess = (blog) => {
+    showNotification({
+      message: `The blog named '${blog.title}' has been added.`,
+    });
+
+    setBlogs(blogs.concat(blog));
   };
 
-  const onCreateFail = (e) => {
-    console.log(e);
+  const onCreateFail = (error) => {
+    showNotification({
+      message: error.response.data.error.message,
+      isError: true,
+    });
+  };
+
+  const showNotification = ({ message, isError = false }) => {
+    setMessage(message);
+    setHasError(isError);
+
+    setTimeout(() => {
+      setHasError(false);
+      setMessage('');
+    }, 5000);
   };
 
   useEffect(() => {
@@ -53,6 +76,8 @@ const App = () => {
       <>
         <h2>blogs</h2>
 
+        <Notification message={message} isError={hasError} />
+
         <div style={{ marginBottom: '2rem' }}>
           Logged in as {user.name}.{' '}
           <form onSubmit={onLogout} style={{ display: 'inline' }}>
@@ -75,6 +100,9 @@ const App = () => {
   return (
     <>
       <h2>Log in</h2>
+
+      <Notification message={message} isError={hasError} />
+
       <LoginForm onSuccess={onLoginSuccess} onFail={onLoginFail} />
     </>
   );
