@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import CreateForm from './components/CreateForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
+import Toggleable from './components/Toggleable';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -11,6 +12,7 @@ const App = () => {
   const [user, setUser] = useState();
   const [message, setMessage] = useState('');
   const [hasError, setHasError] = useState(false);
+  const toggleRef = useRef();
 
   const onLoginSuccess = () => {
     setUser(loginService.getUser());
@@ -19,7 +21,7 @@ const App = () => {
   const onLoginFail = (error) => {
     showNotification({
       message:
-        error.response.data.error.message || 'invalid username or password',
+        error.response.data.error?.message || 'invalid username or password',
       isError: true,
     });
   };
@@ -36,6 +38,8 @@ const App = () => {
     });
 
     setBlogs(blogs.concat(blog));
+
+    toggleRef.current.toggle();
   };
 
   const onCreateFail = (error) => {
@@ -87,7 +91,13 @@ const App = () => {
 
         <h2>create new</h2>
         <div style={{ marginBottom: '2rem' }}>
-          <CreateForm onSuccess={onCreateSuccess} onFail={onCreateFail} />
+          <Toggleable
+            buttonLabelShow='create'
+            buttonLabelHide='cancel'
+            ref={toggleRef}
+          >
+            <CreateForm onSuccess={onCreateSuccess} onFail={onCreateFail} />
+          </Toggleable>
         </div>
 
         {blogs.map((blog) => (
@@ -100,9 +110,7 @@ const App = () => {
   return (
     <>
       <h2>Log in</h2>
-
       <Notification message={message} isError={hasError} />
-
       <LoginForm onSuccess={onLoginSuccess} onFail={onLoginFail} />
     </>
   );

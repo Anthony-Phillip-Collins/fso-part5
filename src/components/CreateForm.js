@@ -6,10 +6,17 @@ const CreateForm = ({ onSuccess, onFail }) => {
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
+  const clearFields = () => {
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const data = await blogService.create({ title, author, url });
+      clearFields();
       onSuccess(data);
     } catch (error) {
       onFail(error);
