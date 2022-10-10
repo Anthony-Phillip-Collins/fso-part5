@@ -10,9 +10,11 @@ import loginService from './services/login';
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState();
-  const [notificationTimeout, setNotificationTimeout] = useState(null);
-  const [message, setMessage] = useState('');
-  const [hasError, setHasError] = useState(false);
+  const [notification, setNotification] = useState({
+    message: '',
+    error: null,
+    isError: false,
+  });
   const toggleRef = useRef();
 
   const onLoginSuccess = () => {
@@ -20,11 +22,7 @@ const App = () => {
   };
 
   const onLoginFail = (error) => {
-    showNotification({
-      message:
-        error.response.data.error?.message || 'invalid username or password',
-      isError: true,
-    });
+    setNotification({ error });
   };
 
   const onLogout = (e) => {
@@ -34,7 +32,7 @@ const App = () => {
   };
 
   const onCreateSuccess = (blog) => {
-    showNotification({
+    setNotification({
       message: `The blog named '${blog.title}' has been added.`,
     });
 
@@ -44,45 +42,41 @@ const App = () => {
   };
 
   const onCreateFail = (error) => {
-    showNotification({
-      message: error.response.data.error.message,
-      isError: true,
-    });
+    setNotification({ error });
   };
 
   const onBlogUpdateSuccess = (blog) => {
-    showNotification({
+    setNotification({
       message: `The blog named '${blog.title}' has been updated.`,
     });
 
     const updated = blogs.map((old) =>
-      old.id !== blog.id ? old : { old, ...blog }
+      old.id !== blog.id ? old : { ...old, ...blog }
     );
 
     setBlogs(updated);
   };
 
   const onBlogUpdateFail = (error) => {
-    showNotification({
-      message: error.response.data.error.message,
-      isError: true,
-    });
+    setNotification({ error });
   };
 
-  const showNotification = ({ message, isError = false }) => {
-    setMessage(message);
-    setHasError(isError);
+  const onBlogDeleteSuccess = (id) => {
+    const deleted = blogs.find((blog) => blog.id === id);
+    setNotification({
+      message: `Blog "${deleted.title}" successfully deleted.`,
+    });
 
-    if (notificationTimeout) {
-      clearTimeout(notificationTimeout);
-    }
+    const updated = blogs.filter((blog) => blog.id !== id);
+    setBlogs(updated);
+  };
 
-    const id = setTimeout(() => {
-      setHasError(false);
-      setMessage('');
-    }, 5000);
+  const onBlogDeleteFail = (error) => {
+    setNotification({ error });
+  };
 
-    setNotificationTimeout(id);
+  const onNotificationHidden = () => {
+    setNotification(null);
   };
 
   useEffect(() => {
@@ -106,10 +100,10 @@ const App = () => {
       <>
         <h2>blogs</h2>
 
-        <Notification message={message} isError={hasError} />
+        <Notification {...notification} onHidden={onNotificationHidden} />
 
         <div style={{ marginBottom: '2rem' }}>
-          Logged in as {user.name}.{' '}
+          Logged in as <b>{user.name}</b>.{' '}
           <form onSubmit={onLogout} style={{ display: 'inline' }}>
             <button type='submit'>Log out</button>
           </form>
@@ -134,6 +128,8 @@ const App = () => {
               {...blog}
               onUpdateSuccess={onBlogUpdateSuccess}
               onUpdateFail={onBlogUpdateFail}
+              onDeleteSuccess={onBlogDeleteSuccess}
+              onDeleteFail={onBlogDeleteFail}
             />
           ))}
       </>
@@ -143,7 +139,7 @@ const App = () => {
   return (
     <>
       <h2>Log in</h2>
-      <Notification message={message} isError={hasError} />
+      <Notification {...notification} onHidden={onNotificationHidden} />
       <LoginForm onSuccess={onLoginSuccess} onFail={onLoginFail} />
     </>
   );
