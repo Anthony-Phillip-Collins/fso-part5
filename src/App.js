@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
-import CreateForm from './components/CreateForm';
+import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
@@ -96,7 +96,7 @@ const App = () => {
             buttonLabelHide='cancel'
             ref={toggleRef}
           >
-            <CreateForm onSuccess={onCreateSuccess} onFail={onCreateFail} />
+            <BlogForm onSuccess={onCreateSuccess} onFail={onCreateFail} />
           </Toggleable>
         </div>
 
