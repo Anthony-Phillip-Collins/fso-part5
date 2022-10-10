@@ -10,6 +10,7 @@ import loginService from './services/login';
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState();
+  const [notificationTimeout, setNotificationTimeout] = useState(null);
   const [message, setMessage] = useState('');
   const [hasError, setHasError] = useState(false);
   const toggleRef = useRef();
@@ -49,14 +50,39 @@ const App = () => {
     });
   };
 
+  const onBlogUpdateSuccess = (blog) => {
+    showNotification({
+      message: `The blog named '${blog.title}' has been updated.`,
+    });
+
+    const updated = blogs.map((old) =>
+      old.id !== blog.id ? old : { old, ...blog }
+    );
+
+    setBlogs(updated);
+  };
+
+  const onBlogUpdateFail = (error) => {
+    showNotification({
+      message: error.response.data.error.message,
+      isError: true,
+    });
+  };
+
   const showNotification = ({ message, isError = false }) => {
     setMessage(message);
     setHasError(isError);
 
-    setTimeout(() => {
+    if (notificationTimeout) {
+      clearTimeout(notificationTimeout);
+    }
+
+    const id = setTimeout(() => {
       setHasError(false);
       setMessage('');
     }, 5000);
+
+    setNotificationTimeout(id);
   };
 
   useEffect(() => {
@@ -101,7 +127,12 @@ const App = () => {
         </div>
 
         {blogs.map((blog) => (
-          <Blog key={blog.id} {...blog} />
+          <Blog
+            key={blog.id}
+            {...blog}
+            onUpdateSuccess={onBlogUpdateSuccess}
+            onUpdateFail={onBlogUpdateFail}
+          />
         ))}
       </>
     );

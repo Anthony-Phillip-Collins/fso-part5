@@ -13,10 +13,16 @@ const getAll = async () => {
   return data;
 };
 
-const create = async (newBlog) => {
-  const { data } = await axios.post(baseUrl, newBlog, authConfig());
+const create = async (blog) => {
+  const { data } = await axios.post(baseUrl, blog, authConfig());
   return data;
 };
-const blogService = { getAll, create };
+
+const update = async (blog) => {
+  const { data } = await axios.put(`${baseUrl}/${blog.id}`, blog, authConfig());
+  return data;
+};
+
+const blogService = { getAll, create, update };
 
 export default blogService;

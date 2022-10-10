@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import blogService from '../services/blogs';
 
 const Blog = (props) => {
   const [expand, setExpand] = useState(false);
-  const { title, author, url, likes, user } = props;
+  const { title, author, url, likes, user, id, onUpdateSuccess, onUpdateFail } =
+    props;
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -12,6 +14,21 @@ const Blog = (props) => {
   };
 
   const toggle = () => setExpand(!expand);
+  const onLikeClick = async () => {
+    try {
+      const blog = await blogService.update({
+        author,
+        title,
+        url,
+        likes: likes + 1,
+        id,
+      });
+
+      onUpdateSuccess(blog);
+    } catch (error) {
+      onUpdateFail(error);
+    }
+  };
 
   return (
     <div style={blogStyle}>
@@ -24,6 +41,7 @@ const Blog = (props) => {
         <>
           <div>{url}</div>
           <div>likes {likes}</div>
+          <button onClick={onLikeClick}>like</button>
           <div>{user.name}</div>
         </>
       )}
