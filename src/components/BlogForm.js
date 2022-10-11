@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import blogService from '../services/blogs';
+import PropTypes from 'prop-types';
 
 const BlogForm = ({ onSuccess, onFail }) => {
   const [title, setTitle] = useState('');
@@ -64,6 +65,11 @@ const BlogForm = ({ onSuccess, onFail }) => {
       </form>
     </>
   );
+};
+
+BlogForm.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onFail: PropTypes.func.isRequired,
 };
 
 export default BlogForm;

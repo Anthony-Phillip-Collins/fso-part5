@@ -1,4 +1,5 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
+import PropTypes from 'prop-types';
 
 const Toggleable = forwardRef(
   ({ children, buttonLabelShow = 'show', buttonLabelHide = 'hide' }, ref) => {
@@ -11,6 +12,7 @@ const Toggleable = forwardRef(
 
     useImperativeHandle(ref, () => ({
       toggle,
+      expand,
     }));
 
     return (
@@ -23,5 +25,11 @@ const Toggleable = forwardRef(
     );
   }
 );
+
+Toggleable.propTypes = {
+  children: PropTypes.node.isRequired,
+  buttonLabelShow: PropTypes.string,
+  buttonLabelHide: PropTypes.string,
+};
 
 export default Toggleable;

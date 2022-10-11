@@ -1,6 +1,7 @@
 import cn from 'classnames';
 import { useEffect, useState } from 'react';
 import styles from './Notification.module.css';
+import PropTypes from 'prop-types';
 
 const Notification = (props) => {
   const { message, error, isError, onHidden } = props;
@@ -33,6 +34,19 @@ const Notification = (props) => {
       {msg}
     </div>
   ) : null;
+};
+
+Notification.propTypes = {
+  message: PropTypes.string,
+  error: PropTypes.shape({
+    response: PropTypes.shape({
+      data: PropTypes.shape({
+        error: PropTypes.shape({ message: PropTypes.string }),
+      }),
+    }),
+  }),
+  isError: PropTypes.bool,
+  onHidden: PropTypes.func,
 };
 
 export default Notification;

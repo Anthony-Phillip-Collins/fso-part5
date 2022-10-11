@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import blogService from '../services/blogs';
 import loginService from '../services/login';
+import PropTypes from 'prop-types';
 
 const Blog = (props) => {
-  const [expand, setExpand] = useState(true);
+  const [expand, setExpand] = useState(false);
   const { title, author, url, likes, id, user } = props;
   const { onUpdateSuccess, onUpdateFail, onDeleteSuccess, onDeleteFail } =
     props;
@@ -65,6 +66,23 @@ const Blog = (props) => {
       {ownedByUser && <button onClick={remove}>remove</button>}
     </div>
   );
+};
+
+Blog.propTypes = {
+  title: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  likes: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+  }),
+  onUpdateSuccess: PropTypes.func.isRequired,
+  onUpdateFail: PropTypes.func.isRequired,
+  onDeleteSuccess: PropTypes.func.isRequired,
+  onDeleteFail: PropTypes.func.isRequired,
 };
 
 export default Blog;
