@@ -7,7 +7,7 @@ import Toggleable from './components/Toggleable';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
-const App = () => {
+function App() {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState();
   const [notification, setNotification] = useState({
@@ -82,8 +82,8 @@ const App = () => {
   useEffect(() => {
     const init = async () => {
       try {
-        const blogs = await blogService.getAll();
-        setBlogs(blogs);
+        const allBlogs = await blogService.getAll();
+        setBlogs(allBlogs);
       } catch (error) {
         console.error(error.message);
       }
@@ -100,20 +100,23 @@ const App = () => {
       <>
         <h2>blogs</h2>
 
-        <Notification {...notification} onHidden={onNotificationHidden} />
+        <Notification
+          notification={notification}
+          onHidden={onNotificationHidden}
+        />
 
         <div style={{ marginBottom: '2rem' }}>
           Logged in as <b>{user.name}</b>.{' '}
           <form onSubmit={onLogout} style={{ display: 'inline' }}>
-            <button type='submit'>Log out</button>
+            <button type="submit">Log out</button>
           </form>
         </div>
 
         <h2>create new</h2>
         <div style={{ marginBottom: '2rem' }}>
           <Toggleable
-            buttonLabelShow='create'
-            buttonLabelHide='cancel'
+            buttonLabelShow="create"
+            buttonLabelHide="cancel"
             ref={toggleRef}
           >
             <BlogForm onSuccess={onCreateSuccess} onFail={onCreateFail} />
@@ -125,7 +128,7 @@ const App = () => {
           .map((blog) => (
             <Blog
               key={blog.id}
-              {...blog}
+              blog={blog}
               onUpdateSuccess={onBlogUpdateSuccess}
               onUpdateFail={onBlogUpdateFail}
               onDeleteSuccess={onBlogDeleteSuccess}
@@ -139,10 +142,13 @@ const App = () => {
   return (
     <>
       <h2>Log in</h2>
-      <Notification {...notification} onHidden={onNotificationHidden} />
+      <Notification
+        notification={notification}
+        onHidden={onNotificationHidden}
+      />
       <LoginForm onSuccess={onLoginSuccess} onFail={onLoginFail} />
     </>
   );
-};
+}
 
 export default App;

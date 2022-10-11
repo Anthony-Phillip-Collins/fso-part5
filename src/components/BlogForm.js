@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import blogService from '../services/blogs';
 import PropTypes from 'prop-types';
+import blogService from '../services/blogs';
 
-const BlogForm = ({ onSuccess, onFail }) => {
+function BlogForm({ onSuccess, onFail }) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -25,47 +25,45 @@ const BlogForm = ({ onSuccess, onFail }) => {
   };
 
   return (
-    <>
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: 'inline-flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-        }}
-      >
-        <label>
-          Title
-          <input
-            type='text'
-            name='title'
-            value={title}
-            onChange={({ target: { value } }) => setTitle(value)}
-          />
-        </label>
-        <label>
-          Author
-          <input
-            type='text'
-            name='author'
-            value={author}
-            onChange={({ target: { value } }) => setAuthor(value)}
-          />
-        </label>
-        <label>
-          URL
-          <input
-            type='text'
-            name='url'
-            value={url}
-            onChange={({ target: { value } }) => setUrl(value)}
-          />
-        </label>
-        <button type='submit'>create</button>
-      </form>
-    </>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        display: 'inline-flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      }}
+    >
+      <label>
+        Title
+        <input
+          type="text"
+          name="title"
+          value={title}
+          onChange={({ target: { value } }) => setTitle(value)}
+        />
+      </label>
+      <label>
+        Author
+        <input
+          type="text"
+          name="author"
+          value={author}
+          onChange={({ target: { value } }) => setAuthor(value)}
+        />
+      </label>
+      <label>
+        URL
+        <input
+          type="text"
+          name="url"
+          value={url}
+          onChange={({ target: { value } }) => setUrl(value)}
+        />
+      </label>
+      <button type="submit">create</button>
+    </form>
   );
-};
+}
 
 BlogForm.propTypes = {
   onSuccess: PropTypes.func.isRequired,

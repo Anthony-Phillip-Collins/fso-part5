@@ -1,13 +1,13 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import blogService from '../services/blogs';
 import loginService from '../services/login';
-import PropTypes from 'prop-types';
 
-const Blog = (props) => {
+function Blog(props) {
   const [expand, setExpand] = useState(false);
-  const { title, author, url, likes, id, user } = props;
-  const { onUpdateSuccess, onUpdateFail, onDeleteSuccess, onDeleteFail } =
+  const { blog, onUpdateSuccess, onUpdateFail, onDeleteSuccess, onDeleteFail } =
     props;
+  const { title, author, url, likes, id, user } = blog;
 
   const blogStyle = {
     paddingTop: 10,
@@ -21,7 +21,7 @@ const Blog = (props) => {
 
   const onLikeClick = async () => {
     try {
-      const blog = await blogService.update({
+      const update = await blogService.update({
         author,
         title,
         url,
@@ -29,13 +29,14 @@ const Blog = (props) => {
         id,
       });
 
-      onUpdateSuccess(blog);
+      onUpdateSuccess(update);
     } catch (error) {
       onUpdateFail(error);
     }
   };
 
   const remove = async () => {
+    // eslint-disable-next-line no-alert
     if (window.confirm(`Remove blog "${title}" by ${author}?`)) {
       try {
         await blogService.remove({ id });
@@ -46,39 +47,49 @@ const Blog = (props) => {
     }
   };
 
-  const ownedByUser = user.username === loginService.getUser()?.username;
+  const ownedByUser = user.username === (loginService.getUser() || {}).username;
 
   return (
     <div style={blogStyle}>
       <div>
-        {title} <b>{author}</b>
-        <button onClick={toggle}>{expand ? 'hide' : 'view'}</button>
+        {title} <b>{author}</b>{' '}
+        <button type="button" onClick={toggle}>
+          {expand ? 'hide' : 'view'}
+        </button>
       </div>
 
       {expand && (
         <>
           <div>{url}</div>
           <div>likes {likes}</div>
-          <button onClick={onLikeClick}>like</button>
+          <button type="button" onClick={onLikeClick}>
+            like
+          </button>
           <div>{user.name}</div>
+          {ownedByUser && (
+            <button type="button" onClick={remove}>
+              remove
+            </button>
+          )}
         </>
       )}
-      {ownedByUser && <button onClick={remove}>remove</button>}
     </div>
   );
-};
+}
 
 Blog.propTypes = {
-  title: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
-  likes: PropTypes.number.isRequired,
-  id: PropTypes.string.isRequired,
-  user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
+  blog: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+    likes: PropTypes.number.isRequired,
     id: PropTypes.string.isRequired,
-  }),
+    user: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
   onUpdateSuccess: PropTypes.func.isRequired,
   onUpdateFail: PropTypes.func.isRequired,
   onDeleteSuccess: PropTypes.func.isRequired,

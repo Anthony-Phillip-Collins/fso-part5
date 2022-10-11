@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import loginService from '../services/login';
 import PropTypes from 'prop-types';
+import loginService from '../services/login';
 
-const LoginForm = ({ onSuccess, onFail }) => {
+function LoginForm({ onSuccess, onFail }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -31,25 +31,25 @@ const LoginForm = ({ onSuccess, onFail }) => {
       <label>
         username
         <input
-          type='text'
+          type="text"
           value={username}
-          name='Username'
+          name="Username"
           onChange={({ target }) => setUsername(target.value)}
         />
       </label>
       <label>
         password
         <input
-          type='password'
+          type="password"
           value={password}
-          name='Password'
+          name="Password"
           onChange={({ target }) => setPassword(target.value)}
         />
       </label>
-      <button type='submit'>login</button>
+      <button type="submit">login</button>
     </form>
   );
-};
+}
 
 LoginForm.propTypes = {
   onSuccess: PropTypes.func.isRequired,

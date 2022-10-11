@@ -1,6 +1,6 @@
 import axios from 'axios';
-const baseUrl = '/api/login';
 
+const baseUrl = '/api/login';
 const Key = 'blogsAppUser';
 
 const login = async (credentials) => {
@@ -13,7 +13,9 @@ const logout = () => {
 };
 
 const setUser = (user) => {
-  user && window.localStorage.setItem(Key, JSON.stringify(user));
+  if (user) {
+    window.localStorage.setItem(Key, JSON.stringify(user));
+  }
 };
 
 const getUser = () => {

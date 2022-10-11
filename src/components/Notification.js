@@ -1,10 +1,13 @@
 import cn from 'classnames';
 import { useEffect, useState } from 'react';
-import styles from './Notification.module.css';
 import PropTypes from 'prop-types';
+import styles from './Notification.module.css';
 
-const Notification = (props) => {
-  const { message, error, isError, onHidden } = props;
+function Notification(props) {
+  const { notification, onHidden } = props;
+  const message = notification && notification.message;
+  const error = notification && notification.error;
+  const isError = notification && notification.isError;
 
   const [show, setShow] = useState();
 
@@ -13,9 +16,11 @@ const Notification = (props) => {
 
   if (error) {
     showError = true;
-    msg =
-      error?.response?.data?.error?.message ||
-      'Somthing went wrong. You may have to log out and back in again.';
+    try {
+      msg = error.response.data.error.message;
+    } catch (e) {
+      msg = 'Somthing went wrong. You may have to log out and back in again.';
+    }
   }
 
   useEffect(() => {
@@ -27,25 +32,32 @@ const Notification = (props) => {
         onHidden();
       }, 3000);
     }
-  }, [message, error, onHidden]);
+  }, [notification]);
 
   return show && msg ? (
     <div className={cn(styles.notification, showError && styles.error)}>
       {msg}
     </div>
   ) : null;
+}
+
+Notification.defaultProps = {
+  notification: {},
+  onHidden: () => {},
 };
 
 Notification.propTypes = {
-  message: PropTypes.string,
-  error: PropTypes.shape({
-    response: PropTypes.shape({
-      data: PropTypes.shape({
-        error: PropTypes.shape({ message: PropTypes.string }),
+  notification: PropTypes.shape({
+    message: PropTypes.string,
+    error: PropTypes.shape({
+      response: PropTypes.shape({
+        data: PropTypes.shape({
+          error: PropTypes.shape({ message: PropTypes.string }),
+        }),
       }),
     }),
+    isError: PropTypes.bool,
   }),
-  isError: PropTypes.bool,
   onHidden: PropTypes.func,
 };
 
