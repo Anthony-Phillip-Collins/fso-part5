@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { prettyDOM } from '@testing-library/dom';
 import Blog from './Blog';
+import BlogForm from './BlogForm';
 
 let blog;
 
@@ -21,7 +22,7 @@ beforeAll(() => {
   };
 });
 
-describe('Blog', () => {
+describe('<Blog />', () => {
   test('initially renders title and author, but not the url or likes', () => {
     render(<Blog blog={blog} onDelete={() => {}} onUpdate={() => {}} />);
 
@@ -53,7 +54,7 @@ describe('Blog', () => {
     expect(likes).toBeDefined();
   });
 
-  test('like button is clicked twice and eventHandler is called twice', () => {
+  test('like button is clicked twice and event handler is called twice', () => {
     const onUpdate = jest.fn();
 
     render(<Blog blog={blog} onDelete={() => {}} onUpdate={onUpdate} />);
@@ -66,5 +67,34 @@ describe('Blog', () => {
     fireEvent.click(likeButton);
 
     expect(onUpdate).toBeCalledTimes(2);
+  });
+});
+
+describe('<BlogForm />', () => {
+  test('calls event handler with right details when new blog is created', () => {
+    const create = jest.fn();
+    render(<BlogForm create={create} />);
+
+    const getInputByLabel = (label) =>
+      screen.getByLabelText(label, { selector: 'input' });
+
+    fireEvent.change(getInputByLabel('Title'), {
+      target: { value: blog.title },
+    });
+
+    fireEvent.change(getInputByLabel('Author'), {
+      target: { value: blog.author },
+    });
+
+    fireEvent.change(getInputByLabel('URL'), {
+      target: { value: blog.url },
+    });
+
+    const button = screen.getByRole('button', { type: 'submit' });
+    fireEvent.click(button);
+
+    expect(JSON.stringify(create.mock.calls[0][0])).toStrictEqual(
+      JSON.stringify({ title: blog.title, author: blog.author, url: blog.url })
+    );
   });
 });
