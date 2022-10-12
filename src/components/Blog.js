@@ -37,13 +37,12 @@ function Blog(props) {
 
   return (
     <div style={blogStyle}>
-      <div>
+      <div id="test">
         {title} <b>{author}</b>{' '}
         <button type="button" onClick={toggle}>
           {expand ? 'hide' : 'view'}
         </button>
       </div>
-
       {expand && (
         <>
           <div>{url}</div>
@@ -85,7 +84,11 @@ const BlogSchema = PropTypes.shape({
 });
 
 Blog.defaultProps = {
-  loggedInUser: null,
+  loggedInUser: {
+    name: null,
+    username: null,
+    id: null,
+  },
 };
 
 Blog.propTypes = {
