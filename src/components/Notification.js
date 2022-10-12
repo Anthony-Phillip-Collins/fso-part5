@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from './Notification.module.css';
 
-function Notification(props) {
-  const { notification, onHidden } = props;
+function Notification({ notification }) {
   const message = notification && notification.message;
   const error = notification && notification.error;
   const isError = notification && notification.isError;
@@ -13,6 +12,7 @@ function Notification(props) {
 
   let msg = message || '';
   let showError = isError;
+  let timeoutId;
 
   if (error) {
     showError = true;
@@ -26,12 +26,14 @@ function Notification(props) {
   useEffect(() => {
     if (message || error) {
       setShow(true);
-      clearTimeout(window.notificationTimeoutId);
-      window.notificationTimeoutId = setTimeout(() => {
+      timeoutId = setTimeout(() => {
         setShow(false);
-        onHidden();
-      }, 3000);
+      }, 5000);
     }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [notification]);
 
   return show && msg ? (
@@ -43,7 +45,6 @@ function Notification(props) {
 
 Notification.defaultProps = {
   notification: {},
-  onHidden: () => {},
 };
 
 Notification.propTypes = {
@@ -58,7 +59,6 @@ Notification.propTypes = {
     }),
     isError: PropTypes.bool,
   }),
-  onHidden: PropTypes.func,
 };
 
 export default Notification;

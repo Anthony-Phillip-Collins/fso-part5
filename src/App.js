@@ -16,13 +16,16 @@ function App() {
     isError: false,
   });
   const toggleRef = useRef();
+  const blogFormRef = useRef();
 
-  const onLoginSuccess = () => {
-    setUser(loginService.getUser());
-  };
-
-  const onLoginFail = (error) => {
-    setNotification({ error });
+  const onLogin = async ({ username, password }) => {
+    try {
+      const data = await loginService.login({ username, password });
+      loginService.setUser(data);
+      setUser(loginService.getUser());
+    } catch (error) {
+      setNotification({ error });
+    }
   };
 
   const onLogout = (e) => {
@@ -31,52 +34,61 @@ function App() {
     setUser(null);
   };
 
-  const onCreateSuccess = (blog) => {
-    setNotification({
-      message: `The blog named '${blog.title}' has been added.`,
-    });
+  const onBlogCreate = async ({ title, author, url }) => {
+    const blog = { title, author, url };
+    try {
+      const data = await blogService.create(blog);
+      setNotification({
+        message: `The blog named '${data.title}' has been added.`,
+      });
 
-    setBlogs(blogs.concat(blog));
+      setBlogs(blogs.concat(data));
 
-    toggleRef.current.toggle();
+      blogFormRef.current.clearFields();
+      toggleRef.current.toggle();
+    } catch (error) {
+      setNotification({ error });
+    }
   };
 
-  const onCreateFail = (error) => {
-    setNotification({ error });
+  const onBlogUpdate = async ({ author, title, url, likes, id }) => {
+    try {
+      const update = await blogService.update({
+        author,
+        title,
+        url,
+        likes,
+        id,
+      });
+
+      setNotification({
+        message: `The blog named '${update.title}' has been updated.`,
+      });
+
+      const updatedBlogs = blogs.map((old) =>
+        old.id !== update.id ? old : { ...old, ...update }
+      );
+
+      setBlogs(updatedBlogs);
+    } catch (error) {
+      setNotification({ error });
+    }
   };
 
-  const onBlogUpdateSuccess = (blog) => {
-    setNotification({
-      message: `The blog named '${blog.title}' has been updated.`,
-    });
+  const onBlogDelete = async (id) => {
+    try {
+      await blogService.remove({ id });
+      const deleted = blogs.find((blog) => blog.id === id);
 
-    const updated = blogs.map((old) =>
-      old.id !== blog.id ? old : { ...old, ...blog }
-    );
+      setNotification({
+        message: `Blog "${deleted.title}" successfully deleted.`,
+      });
 
-    setBlogs(updated);
-  };
-
-  const onBlogUpdateFail = (error) => {
-    setNotification({ error });
-  };
-
-  const onBlogDeleteSuccess = (id) => {
-    const deleted = blogs.find((blog) => blog.id === id);
-    setNotification({
-      message: `Blog "${deleted.title}" successfully deleted.`,
-    });
-
-    const updated = blogs.filter((blog) => blog.id !== id);
-    setBlogs(updated);
-  };
-
-  const onBlogDeleteFail = (error) => {
-    setNotification({ error });
-  };
-
-  const onNotificationHidden = () => {
-    setNotification(null);
+      const updatedBlogs = blogs.filter((blog) => blog.id !== id);
+      setBlogs(updatedBlogs);
+    } catch (error) {
+      setNotification({ error });
+    }
   };
 
   useEffect(() => {
@@ -100,10 +112,7 @@ function App() {
       <>
         <h2>blogs</h2>
 
-        <Notification
-          notification={notification}
-          onHidden={onNotificationHidden}
-        />
+        <Notification notification={notification} />
 
         <div style={{ marginBottom: '2rem' }}>
           Logged in as <b>{user.name}</b>.{' '}
@@ -119,7 +128,7 @@ function App() {
             buttonLabelHide="cancel"
             ref={toggleRef}
           >
-            <BlogForm onSuccess={onCreateSuccess} onFail={onCreateFail} />
+            <BlogForm create={onBlogCreate} ref={blogFormRef} />
           </Toggleable>
         </div>
 
@@ -129,10 +138,9 @@ function App() {
             <Blog
               key={blog.id}
               blog={blog}
-              onUpdateSuccess={onBlogUpdateSuccess}
-              onUpdateFail={onBlogUpdateFail}
-              onDeleteSuccess={onBlogDeleteSuccess}
-              onDeleteFail={onBlogDeleteFail}
+              loggedInUser={user}
+              onUpdate={onBlogUpdate}
+              onDelete={onBlogDelete}
             />
           ))}
       </>
@@ -142,11 +150,8 @@ function App() {
   return (
     <>
       <h2>Log in</h2>
-      <Notification
-        notification={notification}
-        onHidden={onNotificationHidden}
-      />
-      <LoginForm onSuccess={onLoginSuccess} onFail={onLoginFail} />
+      <Notification notification={notification} />
+      <LoginForm login={onLogin} />
     </>
   );
 }

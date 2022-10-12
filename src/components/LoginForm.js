@@ -1,22 +1,13 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import loginService from '../services/login';
 
-function LoginForm({ onSuccess, onFail }) {
+function LoginForm({ login }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    try {
-      const response = await loginService.login({ username, password });
-      setUsername('');
-      setPassword('');
-      loginService.setUser(response);
-      onSuccess();
-    } catch (error) {
-      onFail(error);
-    }
+    login({ username, password });
   };
 
   return (
@@ -52,8 +43,7 @@ function LoginForm({ onSuccess, onFail }) {
 }
 
 LoginForm.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
-  onFail: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
 };
 
 export default LoginForm;

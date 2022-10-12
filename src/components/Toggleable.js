@@ -37,4 +37,6 @@ Toggleable.defaultProps = {
   buttonLabelHide: 'hide',
 };
 
+Toggleable.displayName = 'Toggleable';
+
 export default Toggleable;
