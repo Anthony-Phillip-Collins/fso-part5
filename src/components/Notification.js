@@ -37,7 +37,10 @@ function Notification({ notification }) {
   }, [notification]);
 
   return show && msg ? (
-    <div className={cn(styles.notification, showError && styles.error)}>
+    <div
+      className={cn(styles.notification, showError && styles.error)}
+      data-test="notification"
+    >
       {msg}
     </div>
   ) : null;
