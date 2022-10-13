@@ -36,7 +36,7 @@ function Blog(props) {
   const ownedByUser = user.username === (loggedInUser || {}).username;
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} data-test="blog">
       <div id="test">
         {title} <b>{author}</b>{' '}
         <button type="button" onClick={toggle}>

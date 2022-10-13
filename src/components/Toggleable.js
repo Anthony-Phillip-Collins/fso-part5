@@ -16,12 +16,12 @@ const Toggleable = forwardRef(
     }));
 
     return (
-      <>
+      <div data-test="toggleable">
         <div style={visibility}>{children}</div>
-        <button type="button" onClick={toggle}>
+        <button type="button" onClick={toggle} data-test="toggleable-button">
           {expand ? buttonLabelHide : buttonLabelShow}
         </button>
-      </>
+      </div>
     );
   }
 );

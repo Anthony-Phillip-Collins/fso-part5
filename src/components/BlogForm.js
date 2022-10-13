@@ -29,6 +29,7 @@ const BlogForm = forwardRef(({ create }, ref) => {
         flexDirection: 'column',
         alignItems: 'flex-start',
       }}
+      data-test="blog-form"
     >
       <label>
         Title
