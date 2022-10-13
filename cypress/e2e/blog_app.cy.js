@@ -113,5 +113,28 @@ describe('Blog app', function () {
             });
         });
     });
+
+    it('can be deleted by owner', function () {
+      cy.login(user1);
+
+      cy.createBlog(testBlog);
+
+      cy.get('[data-test=blog]').as('blog');
+      cy.get('@blog').find('[data-test=expand]').click();
+      cy.get('@blog').find('[data-test=delete]').click();
+
+      cy.get('@blog').should('not.exist');
+    });
+
+    it.only('can not be deleted by others', function () {
+      cy.login(user1);
+      cy.createBlog(testBlog);
+      cy.logout();
+      cy.login(user2);
+
+      cy.get('[data-test=blog]').as('blog');
+      cy.get('@blog').find('[data-test=expand]').click();
+      cy.get('@blog').find('[data-test=delete]').should('not.exist');
+    });
   });
 });
