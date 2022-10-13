@@ -36,6 +36,5 @@ Cypress.Commands.add('likeBlog', ($blog) => {
         .should((text2) => {
           expect(text1).not.to.eq(text2);
         });
-      // cy.get('[data-test=blog]').eq(0).should('contain', 'Blog C');
     });
 });
