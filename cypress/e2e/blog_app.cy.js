@@ -126,7 +126,7 @@ describe('Blog app', function () {
       cy.get('@blog').should('not.exist');
     });
 
-    it.only('can not be deleted by others', function () {
+    it('can not be deleted by others', function () {
       cy.login(user1);
       cy.createBlog(testBlog);
       cy.logout();
@@ -135,6 +135,42 @@ describe('Blog app', function () {
       cy.get('[data-test=blog]').as('blog');
       cy.get('@blog').find('[data-test=expand]').click();
       cy.get('@blog').find('[data-test=delete]').should('not.exist');
+    });
+
+    it('is sorted by likes', function () {
+      cy.login(user1);
+
+      cy.createBlog({ ...testBlog, title: 'Blog A' });
+      cy.createBlog({ ...testBlog, title: 'Blog B' });
+      cy.createBlog({ ...testBlog, title: 'Blog C' });
+
+      cy.get('[data-test=blog]').as('blog').should('have.length', 3);
+
+      cy.get('@blog').find('[data-test=expand]').click({ multiple: true });
+
+      cy.get('@blog').should('have.length', 3);
+
+      cy.get('@blog').eq(0).as('blogA');
+      cy.get('@blog').eq(1).as('blogB');
+      cy.get('@blog').eq(2).as('blogC');
+
+      cy.likeBlog('@blogC');
+
+      cy.get('[data-test=blog]').eq(0).should('contain', 'Blog C');
+      cy.get('[data-test=blog]').eq(1).should('contain', 'Blog A');
+      cy.get('[data-test=blog]').eq(2).should('contain', 'Blog B');
+
+      cy.likeBlog('@blogB');
+
+      cy.get('[data-test=blog]').eq(0).should('contain', 'Blog C');
+      cy.get('[data-test=blog]').eq(1).should('contain', 'Blog B');
+      cy.get('[data-test=blog]').eq(2).should('contain', 'Blog A');
+
+      cy.likeBlog('@blogB');
+
+      cy.get('[data-test=blog]').eq(0).should('contain', 'Blog B');
+      cy.get('[data-test=blog]').eq(1).should('contain', 'Blog C');
+      cy.get('[data-test=blog]').eq(2).should('contain', 'Blog A');
     });
   });
 });

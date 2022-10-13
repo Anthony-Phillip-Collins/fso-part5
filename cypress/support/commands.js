@@ -23,3 +23,19 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
   cy.get('@blogForm').find('[name=url]').type(url);
   cy.get('@blogForm').find('[type=submit]').click();
 });
+
+Cypress.Commands.add('likeBlog', ($blog) => {
+  cy.get($blog).find('[data-test=like]').click();
+  cy.get($blog)
+    .find('[data-test=likes]')
+    .as('likes')
+    .invoke('text')
+    .then((text1) => {
+      cy.get('@likes')
+        .invoke('text')
+        .should((text2) => {
+          expect(text1).not.to.eq(text2);
+        });
+      // cy.get('[data-test=blog]').eq(0).should('contain', 'Blog C');
+    });
+});
