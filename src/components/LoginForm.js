@@ -18,6 +18,7 @@ function LoginForm({ login }) {
         flexDirection: 'column',
         alignItems: 'flex-start',
       }}
+      data-test="login-form"
     >
       <label>
         username
@@ -26,6 +27,7 @@ function LoginForm({ login }) {
           value={username}
           name="Username"
           onChange={({ target }) => setUsername(target.value)}
+          data-test="username"
         />
       </label>
       <label>
@@ -35,6 +37,7 @@ function LoginForm({ login }) {
           value={password}
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
+          data-test="password"
         />
       </label>
       <button type="submit">login</button>

@@ -1,7 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { prettyDOM } from '@testing-library/dom';
+// import { prettyDOM } from '@testing-library/dom';
 import Blog from './Blog';
 import BlogForm from './BlogForm';
 
