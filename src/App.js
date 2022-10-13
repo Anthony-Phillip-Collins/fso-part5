@@ -114,7 +114,7 @@ function App() {
 
         <Notification notification={notification} />
 
-        <div style={{ marginBottom: '2rem' }}>
+        <div style={{ marginBottom: '2rem' }} data-test="logout">
           Logged in as <b>{user.name}</b>.{' '}
           <form onSubmit={onLogout} style={{ display: 'inline' }}>
             <button type="submit">Log out</button>

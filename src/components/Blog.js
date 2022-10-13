@@ -39,20 +39,20 @@ function Blog(props) {
     <div style={blogStyle} data-test="blog">
       <div id="test">
         {title} <b>{author}</b>{' '}
-        <button type="button" onClick={toggle}>
+        <button type="button" onClick={toggle} data-test="expand">
           {expand ? 'hide' : 'view'}
         </button>
       </div>
       {expand && (
         <>
           <div>{url}</div>
-          <div>likes {likes}</div>
-          <button type="button" onClick={onLikeClick}>
+          <div data-test="likes">likes {likes}</div>
+          <button type="button" onClick={onLikeClick} data-test="like">
             like
           </button>
           <div>{user.name}</div>
           {ownedByUser && (
-            <button type="button" onClick={remove}>
+            <button type="button" onClick={remove} data-test="delete">
               remove
             </button>
           )}
