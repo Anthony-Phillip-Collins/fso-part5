@@ -69,6 +69,13 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
+### Dependency
+
+This is the backend:
+https://github.com/Anthony-Phillip-Collins/fso-part4.git
+
+Clone it and follow the instruction to run it. It needs to run for this app to work.
+
 ### Login
 
 user: Admin
